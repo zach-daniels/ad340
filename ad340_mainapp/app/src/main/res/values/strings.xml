@@ -2,9 +2,10 @@
     <string name="app_name">ad340_mainapp</string>
     <string name="action_settings">Settings</string>
     <string name="home_page_title">Zach\'s Main App</string>
-    <string name="home_page_subtitle">-Zachary Daniels</string>
     <string name="home_page_intro">Hi there, my name is Zachary Daniels.</string>
     <string name="home_page_activity">Here are some of my favorite activities:</string>
     <string name="activities">\u2022 Board games\n\u2022 Hiking\n\u2022 Pub trivia
     \n\u2022 Movies\n\u2022 Working out</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">Send</string>
 </resources>
