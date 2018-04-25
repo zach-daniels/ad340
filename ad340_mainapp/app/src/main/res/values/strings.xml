@@ -8,4 +8,10 @@
     \n\u2022 Movies\n\u2022 Working out</string>
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
+    <string name="button_movies">Movies</string>
+    <string name="button2">Button 2</string>
+    <string name="button3">Button 3</string>
+    <string name="button4">Button 4</string>
+    <string name="title_activity_movie_detail">Movie Details</string>
+    <string name="title_movie_list">Zombie Movies</string>
 </resources>

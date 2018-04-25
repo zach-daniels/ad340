@@ -20,8 +20,17 @@
         </activity>
         <activity
             android:name=".DisplayMessageActivity"
+            android:label="@string/home_page_title"
+            android:parentActivityName=".HomePage" />
+        <activity
+            android:name=".MovieList"
+            android:label="@string/title_movie_list"
             android:parentActivityName=".HomePage"
-            android:label="@string/home_page_title">
+            />
+        <activity
+            android:name=".MovieDetail"
+            android:label="@string/title_activity_movie_detail"
+            android:parentActivityName=".MovieList">
         </activity>
     </application>
 
