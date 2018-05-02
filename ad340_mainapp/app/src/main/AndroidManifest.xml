@@ -20,18 +20,20 @@
         </activity>
         <activity
             android:name=".DisplayMessageActivity"
-            android:label="@string/home_page_title"
+            android:label="@string/message_title"
             android:parentActivityName=".HomePage" />
         <activity
             android:name=".MovieList"
             android:label="@string/title_movie_list"
-            android:parentActivityName=".HomePage"
-            />
+            android:parentActivityName=".HomePage" />
         <activity
             android:name=".MovieDetail"
             android:label="@string/title_activity_movie_detail"
-            android:parentActivityName=".MovieList">
-        </activity>
+            android:parentActivityName=".MovieList" />
+        <activity
+            android:name=".About"
+            android:label="@string/about_title"
+            android:parentActivityName=".HomePage" />
     </application>
 
 </manifest>
