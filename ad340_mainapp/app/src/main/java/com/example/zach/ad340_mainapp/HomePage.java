@@ -1,6 +1,8 @@
 package com.example.zach.ad340_mainapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -25,6 +27,16 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
+
+        // Populate text field w/ shared preference if able
+        Context context = getApplicationContext();
+        SharedPreferences sharedPref = context.getSharedPreferences(getString(
+                R.string.saved_message), Context.MODE_PRIVATE);
+        EditText editText = findViewById(R.id.editText);
+        String defaultMessage = getResources().getString(R.string.edit_message);
+        String savedMessage = sharedPref.getString(getString(R.string.message_key), defaultMessage);
+        editText.setText(savedMessage);
+
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
@@ -60,7 +72,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         }
     }
 
-    public boolean onNavigationItemSelected(@NonNull MenuItem  menuItem) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
         Intent intent = null;
 
@@ -82,7 +94,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if(drawer.isDrawerOpen(GravityCompat.START)){
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
@@ -90,11 +102,30 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     }
 
     public void sendMessage(View view) {
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
         EditText editText = findViewById(R.id.editText);
         String message = editText.getText().toString();
-        intent.putExtra("message", message);
-        startActivity(intent);
+
+        if (validateMessage(message)) {
+
+            // Write to the shared prefs
+            Context context = getApplicationContext();
+            SharedPreferences sharedPref = context.getSharedPreferences(getString(
+                    R.string.saved_message), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(getString(R.string.message_key), message);
+            editor.commit();
+
+            Intent intent = new Intent(this, DisplayMessageActivity.class);
+            intent.putExtra("message", message);
+            startActivity(intent);
+        } else {
+            CharSequence toastText = "Invalid input.";
+            Toast.makeText(this, toastText, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public boolean validateMessage (String message) {
+         return !(message.isEmpty() || message.matches("^\\s*$"));
     }
 
     public void getMovies(View view) {
