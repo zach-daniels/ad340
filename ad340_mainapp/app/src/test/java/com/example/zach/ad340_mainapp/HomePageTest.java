@@ -1,7 +1,6 @@
 package com.example.zach.ad340_mainapp;
 
 import org.junit.Test;
-import org.mockito.Mock;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -12,23 +11,25 @@ import static org.mockito.Mockito.*;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 public class HomePageTest {
+
+    private String emptyMessage      = "";
+    private String validMessage      = "Message";
+    private String whiteSpaceMessage = " ";
+
     private HomePage testPage = new HomePage();
 
     @Test
     public void testMessageValidationEmptyString() {
-        String message = "";
-        assertFalse(testPage.validateMessage(message));
+        assertFalse(testPage.validateMessage(emptyMessage));
     }
 
     @Test
     public void testMessageValidationString() {
-        String message = "Message";
-        assertTrue(testPage.validateMessage(message));
+        assertTrue(testPage.validateMessage(validMessage));
     }
 
     @Test
     public void testMessageValidationWhiteSpace() {
-        String message = " ";
-        assertFalse(testPage.validateMessage(message));
+        assertFalse(testPage.validateMessage(whiteSpaceMessage));
     }
 }

@@ -23,6 +23,10 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mToggle;
 
+    // Wrapper class for shared preferences
+    private SharedPreferences mySharedPref;
+    private SharedPreferencesWrapper mySharedPrefWrapper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,12 +34,11 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
 
         // Populate text field w/ shared preference if able
         Context context = getApplicationContext();
-        SharedPreferences sharedPref = context.getSharedPreferences(getString(
+        mySharedPref = context.getSharedPreferences(getString(
                 R.string.saved_message), Context.MODE_PRIVATE);
+        mySharedPrefWrapper = new SharedPreferencesWrapper(mySharedPref);
         EditText editText = findViewById(R.id.editText);
-        String defaultMessage = getResources().getString(R.string.edit_message);
-        String savedMessage = sharedPref.getString(getString(R.string.message_key), defaultMessage);
-        editText.setText(savedMessage);
+        editText.setText(mySharedPrefWrapper.getPreferences());
 
 
         Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -104,17 +107,8 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     public void sendMessage(View view) {
         EditText editText = findViewById(R.id.editText);
         String message = editText.getText().toString();
-
         if (validateMessage(message)) {
-
-            // Write to the shared prefs
-            Context context = getApplicationContext();
-            SharedPreferences sharedPref = context.getSharedPreferences(getString(
-                    R.string.saved_message), Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString(getString(R.string.message_key), message);
-            editor.commit();
-
+            mySharedPrefWrapper.savePreferences(message);
             Intent intent = new Intent(this, DisplayMessageActivity.class);
             intent.putExtra("message", message);
             startActivity(intent);
