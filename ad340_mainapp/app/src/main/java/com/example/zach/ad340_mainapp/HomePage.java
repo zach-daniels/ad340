@@ -128,10 +128,13 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     }
 
     public void onClickButton2(View view) {
-        CharSequence toastText = "Button 2!";
+        /*CharSequence toastText = "Button 2!";
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(this, toastText, duration);
         toast.show();
+        */
+        Intent intent = new Intent(this, CameraActivity.class);
+        startActivity(intent);
     }
 
     public void onClickButton3(View view) {

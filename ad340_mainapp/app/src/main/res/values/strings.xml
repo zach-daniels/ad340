@@ -27,4 +27,6 @@
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
     <string name="saved_message">valid_entry</string>
+    <string name="camera_name_view">Name</string>
+    <string name="camera_title">Traffic Cameras</string>
 </resources>
