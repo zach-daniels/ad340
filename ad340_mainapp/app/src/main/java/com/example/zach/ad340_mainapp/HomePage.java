@@ -3,6 +3,7 @@ package com.example.zach.ad340_mainapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -128,20 +129,13 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
     }
 
     public void onClickButton2(View view) {
-        /*CharSequence toastText = "Button 2!";
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(this, toastText, duration);
-        toast.show();
-        */
         Intent intent = new Intent(this, CameraActivity.class);
         startActivity(intent);
     }
 
     public void onClickButton3(View view) {
-        CharSequence toastText = "Button 3!";
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(this, toastText, duration);
-        toast.show();
+        Intent intent = new Intent(this, LocationActivity.class);
+        startActivity(intent);
     }
 
     public void onClickButton4(View view) {

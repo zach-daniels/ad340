@@ -10,8 +10,8 @@
     <string name="button_send">Send</string>
     <string name="message_title">Message Page</string>
     <string name="button_movies">Movies</string>
-    <string name="button2">Button 2</string>
-    <string name="button3">Button 3</string>
+    <string name="button_cameras">Cameras</string>
+    <string name="button_map">Map</string>
     <string name="button4">Button 4</string>
     <string name="title_activity_movie_detail">Movie Details</string>
     <string name="title_movie_list">Zombie Movies</string>
@@ -29,4 +29,5 @@
     <string name="saved_message">valid_entry</string>
     <string name="camera_name_view">Name</string>
     <string name="camera_title">Traffic Cameras</string>
+    <string name="map_title">Cameras on Map</string>
 </resources>

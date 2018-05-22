@@ -104,7 +104,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="48dp"
             android:onClick="onClickButton2"
-            android:text="@string/button2"
+            android:text="@string/button_cameras"
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/editText" />
 
@@ -115,7 +115,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
             android:onClick="onClickButton3"
-            android:text="@string/button3"
+            android:text="@string/button_map"
             app:layout_constraintEnd_toStartOf="@+id/guideline"
             app:layout_constraintTop_toBottomOf="@+id/button6" />
 
