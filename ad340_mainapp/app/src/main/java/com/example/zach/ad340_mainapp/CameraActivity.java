@@ -47,7 +47,7 @@ public class CameraActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         cameraArrayList = new ArrayList<>();
-        cameraAdapter = new CameraAdapter(cameraArrayList);
+        cameraAdapter = new CameraAdapter(cameraArrayList, CameraActivity.this);
         recyclerView.setAdapter(cameraAdapter);
 
         requestQueue = Volley.newRequestQueue(this);
@@ -104,13 +104,15 @@ public class CameraActivity extends AppCompatActivity {
         requestQueue.add(request);
     }
 
-    public class CameraAdapter extends RecyclerView.Adapter<CameraAdapter.ViewHolder> {
+    private class CameraAdapter extends RecyclerView.Adapter<CameraAdapter.ViewHolder> {
+
         private ArrayList<Camera> cameraArray;
+        private Context context;
 
-        Context context = getApplicationContext();
 
-        public CameraAdapter(ArrayList<Camera> cameraArrayList) {
+        public CameraAdapter(ArrayList<Camera> cameraArrayList, Context context) {
             this.cameraArray = cameraArrayList;
+            this.context = context;
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {

@@ -88,7 +88,7 @@ public class MovieList extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
+    private class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
         // Provide a reference to the views for each data item
         // Complex data items may need more than one view per item, and

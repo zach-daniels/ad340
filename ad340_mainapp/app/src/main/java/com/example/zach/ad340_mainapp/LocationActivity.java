@@ -1,5 +1,8 @@
 package com.example.zach.ad340_mainapp;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -9,6 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -24,9 +30,12 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,13 +47,10 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
     private static final String TAG = LocationActivity.class.getSimpleName();
     private GoogleMap mMap;
 
-    // The entry point to the Fused LocationActivity Provider.
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-
     // A default location (Sydney, Australia) and default zoom to use when location permission is
     // not granted.
     private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
-    private static final int DEFAULT_ZOOM = 15;
+    private static final int DEFAULT_ZOOM = 12;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private boolean mLocationPermissionGranted;
 
@@ -61,14 +67,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Construct a FusedLocationProviderClient.
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
         getLocationPermission();
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
     }
 
     private void getLocationPermission() {
@@ -81,6 +80,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
+            createMap();
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -99,46 +99,40 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mLocationPermissionGranted = true;
+                    createMap();
+
                 }
             }
         }
-        updateLocationUI();
     }
 
     public void onMapReady(GoogleMap map) {
         mMap = map;
 
-        // Turn on the My LocationActivity layer and the related control on the map.
-        updateLocationUI();
-
         // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
+        if (mLocationPermissionGranted) {
+            getDeviceLocation();
 
-        //test marker
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(10, 10))
-                .title("Love pizza!"));
+            // IDE was complaining if I didn't add this.
+            if (ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_COARSE_LOCATION) !=
+                    PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            mMap.setMyLocationEnabled(true);
+        }
+
 
         // add markers
         parseJSON();
     }
 
-    private void updateLocationUI() {
-        if (mMap == null) {
-            return;
-        }
-        try {
-            if (mLocationPermissionGranted) {
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            } else {
-                mMap.setMyLocationEnabled(false);
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                mLastKnownLocation = null;
-            }
-        } catch (SecurityException e) {
-            Log.e("Exception: %s", e.getMessage());
-        }
+    private void createMap() {
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
     private void getDeviceLocation() {
@@ -146,6 +140,9 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
          */
+
+        FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
         try {
             if (mLocationPermissionGranted) {
                 Task locationResult = mFusedLocationProviderClient.getLastLocation();
@@ -203,10 +200,20 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
                                 } else {
                                     imageURL = "http://images.wsdot.wa.gov/nw/" + imageURL;
                                 }
+
+                                Camera cam = new Camera(imageURL, desc);
+
+                                // Create info window
+                                CustomInfoWindow customWindow =
+                                        new CustomInfoWindow(LocationActivity.this);
+                                mMap.setInfoWindowAdapter(customWindow);
+
                                 //add map marker
-                                mMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(latitude, longitude))
-                                .title(desc));
+                                Marker marker = mMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(latitude, longitude))
+                                        .title(desc));
+                                marker.setTag(cam);
+                                marker.showInfoWindow();
 
                             }
                         } catch (JSONException e) {
@@ -227,5 +234,65 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         });
 
         requestQueue.add(request);
+    }
+
+    private class CustomInfoWindow implements GoogleMap.InfoWindowAdapter {
+
+        private Context context;
+
+        public CustomInfoWindow (Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public View getInfoWindow(Marker marker) {
+            return null;
+        }
+
+        @Override
+        public View getInfoContents (Marker marker) {
+            View view = ((Activity) context).getLayoutInflater().inflate(R.layout.info_window,
+                    null);
+            TextView cameraName = view.findViewById(R.id.info_window_desc);
+            ImageView cameraImg = view.findViewById(R.id.info_window_image);
+
+            cameraName.setText(marker.getTitle());
+            Camera camera = (Camera) marker.getTag();
+            String imageURL = camera.getImageURL();
+
+
+
+            Picasso.with(view.getContext()).load(imageURL).error(R.mipmap.ic_launcher)
+                    .resize(640, 480).into(cameraImg,
+                    new MarkerCallback(marker));
+
+            return view;
+        }
+
+        private class MarkerCallback implements Callback {
+            Marker marker = null;
+
+            MarkerCallback (Marker marker) {
+                this.marker = marker;
+            }
+
+            public void onError() {
+
+            }
+
+            @Override
+            public void onSuccess() {
+                if (marker == null) {
+                    return;
+                }
+
+                if (!marker.isInfoWindowShown()) {
+                    return;
+                }
+
+                marker.hideInfoWindow();
+                marker.showInfoWindow();
+            }
+        }
     }
 }

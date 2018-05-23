@@ -30,4 +30,5 @@
     <string name="camera_name_view">Name</string>
     <string name="camera_title">Traffic Cameras</string>
     <string name="map_title">Cameras on Map</string>
+    <string name="window_street_name">Street</string>
 </resources>
