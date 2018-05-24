@@ -152,9 +152,17 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = (Location) task.getResult();
-                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                    new LatLng(mLastKnownLocation.getLatitude(),
-                                            mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+
+                            // Check if location setting is enabled. Not a great fix.
+                            if (mLastKnownLocation != null) {
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                        new LatLng(mLastKnownLocation.getLatitude(),
+                                                mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                            } else {
+                                Toast.makeText(LocationActivity.this,
+                                        "Error. Please enable location.",
+                                        Toast.LENGTH_LONG).show();
+                            }
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
@@ -240,7 +248,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
 
         private Context context;
 
-        public CustomInfoWindow (Context context) {
+        public CustomInfoWindow(Context context) {
             this.context = context;
         }
 
@@ -250,7 +258,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         }
 
         @Override
-        public View getInfoContents (Marker marker) {
+        public View getInfoContents(Marker marker) {
             View view = ((Activity) context).getLayoutInflater().inflate(R.layout.info_window,
                     null);
             TextView cameraName = view.findViewById(R.id.info_window_desc);
@@ -259,7 +267,6 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
             cameraName.setText(marker.getTitle());
             Camera camera = (Camera) marker.getTag();
             String imageURL = camera.getImageURL();
-
 
 
             Picasso.with(view.getContext()).load(imageURL).error(R.mipmap.ic_launcher)
@@ -272,7 +279,7 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
         private class MarkerCallback implements Callback {
             Marker marker = null;
 
-            MarkerCallback (Marker marker) {
+            MarkerCallback(Marker marker) {
                 this.marker = marker;
             }
 
