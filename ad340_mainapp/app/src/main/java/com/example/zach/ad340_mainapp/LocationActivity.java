@@ -29,6 +29,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -43,7 +45,6 @@ import org.json.JSONObject;
 
 
 public class LocationActivity extends AppCompatActivity implements OnMapReadyCallback {
-
     private static final String TAG = LocationActivity.class.getSimpleName();
     private GoogleMap mMap;
 
@@ -124,7 +125,6 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
             mMap.setMyLocationEnabled(true);
         }
 
-
         // add markers
         parseJSON();
     }
@@ -155,13 +155,20 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
 
                             // Check if location setting is enabled. Not a great fix.
                             if (mLastKnownLocation != null) {
+                                double currentLatitude = mLastKnownLocation.getLatitude();
+                                double currentLongitude = mLastKnownLocation.getLongitude();
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(mLastKnownLocation.getLatitude(),
-                                                mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                                        new LatLng(currentLatitude,
+                                                currentLongitude), DEFAULT_ZOOM));
+                                Marker currentMarker = mMap.addMarker(new MarkerOptions()
+                                        .position(new LatLng(currentLatitude, currentLongitude))
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                                        .title("Current Location"));
                             } else {
                                 Toast.makeText(LocationActivity.this,
                                         "Error. Please enable location.",
                                         Toast.LENGTH_LONG).show();
+                                finish();
                             }
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
@@ -217,11 +224,20 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
                                 mMap.setInfoWindowAdapter(customWindow);
 
                                 //add map marker
-                                Marker marker = mMap.addMarker(new MarkerOptions()
-                                        .position(new LatLng(latitude, longitude))
-                                        .title(desc));
-                                marker.setTag(cam);
-                                marker.showInfoWindow();
+                                if (type.equals("sdot")) {
+                                    Marker marker = mMap.addMarker(new MarkerOptions()
+                                            .position(new LatLng(latitude, longitude))
+                                            .title(desc));
+                                    marker.setTag(cam);
+                                    marker.showInfoWindow();
+                                } else {
+                                    Marker marker = mMap.addMarker(new MarkerOptions()
+                                            .position(new LatLng(latitude, longitude))
+                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                                            .title(desc));
+                                    marker.setTag(cam);
+                                    marker.showInfoWindow();
+                                }
 
                             }
                         } catch (JSONException e) {
@@ -259,21 +275,26 @@ public class LocationActivity extends AppCompatActivity implements OnMapReadyCal
 
         @Override
         public View getInfoContents(Marker marker) {
-            View view = ((Activity) context).getLayoutInflater().inflate(R.layout.info_window,
-                    null);
-            TextView cameraName = view.findViewById(R.id.info_window_desc);
-            ImageView cameraImg = view.findViewById(R.id.info_window_image);
+            // Check if the marker is a camera
+            if (marker.getTag() != null) {
+                View view = ((Activity) context).getLayoutInflater().inflate(R.layout.info_window,
+                        null);
+                TextView cameraName = view.findViewById(R.id.info_window_desc);
+                ImageView cameraImg = view.findViewById(R.id.info_window_image);
 
-            cameraName.setText(marker.getTitle());
-            Camera camera = (Camera) marker.getTag();
-            String imageURL = camera.getImageURL();
+                cameraName.setText(marker.getTitle());
+                Camera camera = (Camera) marker.getTag();
+                String imageURL = camera.getImageURL();
 
 
-            Picasso.with(view.getContext()).load(imageURL).error(R.mipmap.ic_launcher)
-                    .resize(640, 480).into(cameraImg,
-                    new MarkerCallback(marker));
+                Picasso.with(view.getContext()).load(imageURL).error(R.mipmap.ic_launcher)
+                        .resize(640, 480).into(cameraImg,
+                        new MarkerCallback(marker));
 
-            return view;
+                return view;
+            } else {
+                return null;
+            }
         }
 
         private class MarkerCallback implements Callback {
