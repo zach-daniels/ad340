@@ -1,15 +1,13 @@
-package com.example.zach.ad340_mainapp;
+package com.zachworks.school.ad340_mainapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Movie;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -68,7 +66,7 @@ public class MovieList extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new MovieAdapter();
+        mAdapter = new MovieAdapter(MovieList.this);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -90,10 +88,16 @@ public class MovieList extends AppCompatActivity {
 
     private class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
+        private Context context;
+
+        public MovieAdapter (Context context) {
+            this.context = context;
+        }
+
         // Provide a reference to the views for each data item
         // Complex data items may need more than one view per item, and
         // you provide access to all the views for a data item in a view holder
-        Context context = getApplicationContext();
+
         public class ViewHolder extends RecyclerView.ViewHolder {
             // each data item is just a string in this case
             public TextView movieTitle;

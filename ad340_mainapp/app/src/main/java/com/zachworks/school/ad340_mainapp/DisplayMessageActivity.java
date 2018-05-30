@@ -1,4 +1,4 @@
-package com.example.zach.ad340_mainapp;
+package com.zachworks.school.ad340_mainapp;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.util.Log;
 import android.widget.Toast;
 
 public class DisplayMessageActivity extends AppCompatActivity {
@@ -27,11 +26,9 @@ public class DisplayMessageActivity extends AppCompatActivity {
 
 
         if (savedInstanceState != null) {
-            Log.d(TAG, "onCreate Restoring previous state");
             message = savedInstanceState.getString("message");
             textView.setText(message);
         } else {
-            Log.d(TAG, "onCreate No saved state available");
             // Get the Intent that started this activity and extract the string
             Intent intent = getIntent();
             message = intent.getStringExtra("message");
@@ -56,6 +53,7 @@ public class DisplayMessageActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /*
     @Override
     protected void onStart() {
         super.onStart();
@@ -91,4 +89,5 @@ public class DisplayMessageActivity extends AppCompatActivity {
         super.onRestart();
         Log.d(TAG, "onRestart() called");
     }
+    */
 }

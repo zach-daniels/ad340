@@ -1,4 +1,4 @@
-package com.example.zach.ad340_mainapp;
+package com.zachworks.school.ad340_mainapp;
 
 public class Camera {
     private String imageURL;

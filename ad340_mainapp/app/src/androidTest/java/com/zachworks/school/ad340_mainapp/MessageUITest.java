@@ -1,4 +1,4 @@
-package com.example.zach.ad340_mainapp;
+package com.zachworks.school.ad340_mainapp;
 
 import org.junit.Rule;
 import org.junit.Test;

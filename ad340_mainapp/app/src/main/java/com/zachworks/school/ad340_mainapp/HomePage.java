@@ -1,9 +1,8 @@
-package com.example.zach.ad340_mainapp;
+package com.zachworks.school.ad340_mainapp;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -34,7 +33,7 @@ public class HomePage extends AppCompatActivity implements NavigationView.OnNavi
         setContentView(R.layout.activity_home_page);
 
         // Populate text field w/ shared preference if able
-        Context context = getApplicationContext();
+        Context context = HomePage.this;
         mySharedPref = context.getSharedPreferences(getString(
                 R.string.saved_message), Context.MODE_PRIVATE);
         mySharedPrefWrapper = new SharedPreferencesWrapper(mySharedPref);

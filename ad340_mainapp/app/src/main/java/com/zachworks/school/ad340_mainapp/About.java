@@ -1,4 +1,4 @@
-package com.example.zach.ad340_mainapp;
+package com.zachworks.school.ad340_mainapp;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
